@@ -1,0 +1,182 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class Subject {
+    private String name;
+    private double grade;
+
+    public Subject(String name, double grade) {
+        this.name = name;
+        this.grade = grade;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getGrade() {
+        return grade;
+    }
+
+    public void setGrade(double grade) {
+        this.grade = grade;
+    }
+
+    @Override
+    public String toString() {
+        return name + ": " + grade;
+    }
+}
+
+class Student {
+    private String name;
+    private Map<String, Subject> subjects;
+
+    public Student(String name) {
+        this.name = name;
+        this.subjects = new HashMap<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void addSubject(String subjectName, double grade) {
+        subjects.put(subjectName, new Subject(subjectName, grade));
+    }
+
+    public void updateGrade(String subjectName, double grade) {
+        if (subjects.containsKey(subjectName)) {
+            subjects.get(subjectName).setGrade(grade);
+        } else {
+            System.out.println("Subject not found.");
+        }
+    }
+
+    public double calculateAverageGrade() {
+        double total = 0;
+        for (Subject subject : subjects.values()) {
+            total += subject.getGrade();
+        }
+        return total / subjects.size();
+    }
+
+    public String getLetterGrade(double average) {
+        if (average >= 90) {
+            return "A";
+        } else if (average >= 80) {
+            return "B";
+        } else if (average >= 70) {
+            return "C";
+        } else if (average >= 60) {
+            return "D";
+        } else {
+            return "F";
+        }
+    }
+
+    public double getGPA(double average) {
+        if (average >= 90) {
+            return 4.0;
+        } else if (average >= 80) {
+            return 3.0;
+        } else if (average >= 70) {
+            return 2.0;
+        } else if (average >= 60) {
+            return 1.0;
+        } else {
+            return 0.0;
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Student: ").append(name).append("\n");
+        for (Subject subject : subjects.values()) {
+            sb.append(subject).append("\n");
+        }
+        double average = calculateAverageGrade();
+        sb.append("Average Grade: ").append(average).append("\n");
+        sb.append("Letter Grade: ").append(getLetterGrade(average)).append("\n");
+        sb.append("GPA: ").append(getGPA(average)).append("\n");
+        return sb.toString();
+    }
+}
+
+
+public class GradeManagementSystem {
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.print("Enter student's name: ");
+        String studentName = scanner.nextLine();
+
+        Student student = new Student(studentName);
+
+        while (true) {
+            System.out.println("1. Add Subject and Grade");
+            System.out.println("2. Update Grade");
+            System.out.println("3. Calculate Average Grade");
+            System.out.println("4. Display Student Information");
+            System.out.println("5. Exit");
+
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    addSubjectAndGrade(student);
+                    break;
+                case 2:
+                    updateGrade(student);
+                    break;
+                case 3:
+                    calculateAverageGrade(student);
+                    break;
+                case 4:
+                    displayStudentInformation(student);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private static void addSubjectAndGrade(Student student) {
+        System.out.print("Enter subject name: ");
+        String subjectName = scanner.nextLine();
+        System.out.print("Enter grade: ");
+        double grade = scanner.nextDouble();
+        scanner.nextLine(); // Consume newline
+
+        student.addSubject(subjectName, grade);
+        System.out.println("Subject and grade added.");
+    }
+
+    private static void updateGrade(Student student) {
+        System.out.print("Enter subject name: ");
+        String subjectName = scanner.nextLine();
+        System.out.print("Enter new grade: ");
+        double grade = scanner.nextDouble();
+        scanner.nextLine(); // Consume newline
+
+        student.updateGrade(subjectName, grade);
+        System.out.println("Grade updated.");
+    }
+
+    private static void calculateAverageGrade(Student student) {
+        double average = student.calculateAverageGrade();
+        System.out.println("Average Grade: " + average);
+        System.out.println("Letter Grade: " + student.getLetterGrade(average));
+        System.out.println("GPA: " + student.getGPA(average));
+    }
+
+    private static void displayStudentInformation(Student student) {
+        System.out.println(student);
+    }
+}
